@@ -1,0 +1,41 @@
+--- 
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+  name: flask
+  namespace: default
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      run: flask
+  template: 
+    metadata: 
+      labels: 
+        run: flask
+    spec: 
+      containers: 
+        - 
+          image: "lhr.ocir.io/aiapps/buses/flask:1.0.3"
+          imagePullPolicy: Always
+          name: flask
+          ports: 
+            - 
+              containerPort: 5000
+      imagePullSecrets: 
+        - 
+          name: ocirsecret2
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    run: flask
+  type: ClusterIP
